@@ -1,0 +1,46 @@
+---
+name: mtail
+
+releases:
+- name: mtail
+  version: latest
+
+instance_groups:
+- name: mtail
+  instances: 1
+  vm_type: small
+  stemcell: default
+  vm_extensions: []
+  azs:
+  - z1
+  - z2
+  - z3
+  networks:
+  - name: default
+  jobs:
+  - name: mtail
+    release: mtail
+  properties:
+    mtail:
+      port: 3903
+      progs:
+      - name: boshlogs
+        log: "/var/vcap/sys/log"
+        config: |
+          counter filename_lines by filename
+          strptime("2017-07-20T22:50:42Z", "2006-01-02T15:04:05Z07:00")
+          /$/ {
+            filename_lines[getfilename()]++
+          }
+
+stemcells:
+- alias: default
+  name: bosh-google-kvm-ubuntu-xenial-go_agent
+  version: latest
+
+update:
+  canaries: 1
+  max_in_flight: 1
+  serial: false
+  canary_watch_time: 1000-60000
+  update_watch_time: 1000-60000
