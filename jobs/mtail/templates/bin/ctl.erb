@@ -21,7 +21,7 @@ case ${1:-help} in
     (
         {
             setcap 'cap_net_bind_service=+ep' $(readlink -nf $(which mtail))
-            exec chpst -v -u vcap:vcap mtail --address=<%= p('mtail.address', '0.0.0.0') %> --port=<%= p('mtail.port', '3903') %> --logtostderr --progs=/var/vcap/jobs/mtail/config/progs \
+            exec chpst -v mtail --address=<%= p('mtail.address', '0.0.0.0') %> --port=<%= p('mtail.port', '3903') %> --logtostderr --progs=/var/vcap/jobs/mtail/config/progs \
               <% p("mtail.progs", []).each do |cfg| %><% if cfg["log"] != nil && cfg["log"] != '' %> --logs=<%= cfg["log"] %><% end %><% end %> \
               <% if_p("mtail.graphite") do |graphite| %>--graphite_host_port=<%= graphite %> <% if_p("mtail.graphite_prefix") do |prefix| %> --graphite_prefix=<%= prefix %><% end %> --metric_push_interval_seconds=<%= p('mtail.push_interval_seconds', '60') %><% end %> \
               <% if_p("mtail.statsd") do |statsd| %>--statsd_hostport=<%= statsd %> <% if_p("mtail.statsd_prefix") do |prefix| %> --statsd_prefix=<%= prefix %><% end %> --metric_push_interval_seconds=<%= p('mtail.push_interval_seconds', '60') %><% end %>
