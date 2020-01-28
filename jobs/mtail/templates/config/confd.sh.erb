@@ -8,21 +8,21 @@ set -e # exit immediately if a simple command exits with a non-zero status
 # Go to the progs folder
 [ "$#" != "1" ] && echo "Arg <folder> not provided!" && exit 1
 
-pushd "$1"
+pushd "$1" >/dev/null
   # Delete all configuration and recreate it
   rm -f *
 
 <% p("mtail.progs", []).each do |cfg| %>
-  <% if cfg["config"] != nil && cfg["config"] != '' %>
-    <% if cfg["config"].start_with? '/var/vcap' %>
+<% if cfg["config"] != nil && cfg["config"] != '' %>
+<% if cfg["config"].start_with? '/var/vcap' %>
   # Link to another job/package
   ln -sf "<%= cfg["config"] %>" "<%= cfg["name"] %>.mtail"
-    <% else %>
+<% else %>
   cat <<'CFG' > "<%= cfg["name"] %>.mtail"
 <%= cfg["config"] %>
 CFG
-    <% end %>
-  <% end %>
+<% end %>
+<% end %>
 <% end %>
 
-popd
+popd >/dev/null
