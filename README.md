@@ -16,6 +16,10 @@ bosh  create-release --force --tarball=/tmp/release.tgz
 bosh -e <bosh-env> upload-release /tmp/release.tgz
 ```
 
+For a final release, make sure you have GITHUB_TOKEN defined and `s3cmd`
+command with the proper credentials (also populate `config/private.yml`
+with the S3 key id and key.
+
 You can deploy an empty vm with this example manifest to provide
 a metric per log file with the number of lines (graphite is also
 enabled here!):
