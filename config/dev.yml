@@ -2,3 +2,4 @@
 dev_name: mtail
 blobstore:
   provider: local
+latest_release_filename: "/home/jriguera/devel/work/mtail-boshrelease/dev_releases/mtail/mtail-0+dev.7.yml"
