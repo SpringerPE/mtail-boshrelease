@@ -1,0 +1,4 @@
+---
+dev_name: mtail
+blobstore:
+  provider: local
