@@ -1,0 +1,45 @@
+---
+name: mtail
+
+description: Mtail exporter
+
+templates:
+  bin/ctl.erb: bin/ctl
+  bin/pre-start: bin/pre-start
+  data/properties.sh.erb: data/properties.sh
+  config/confd.sh.erb: config/confd.sh
+
+packages:
+- mtail
+
+provides:
+- name: mtail
+  type: exporter
+  properties:
+  - mtail.port
+
+properties:
+  mtail.port:
+    default: 3903
+    description: Listen port.
+  mtail.address:
+    default: "0.0.0.0"
+    description: Host or IP address on which to bind HTTP listener.
+  mtail.progs:
+    description: |
+      List of mtail progs. You can define as many config files as you need. Each entry
+      within "config" key will be a file. you can use full paths to other mtail config
+      files provided by other jobs, just indicating the full path: /var/vcap ...
+      Keys required for each prog (entry): 'name', 'log', 'config'
+    default: []
+  mtail.graphite:
+    description: Graphite carbon server to send metrics to.
+  mtail.graphite_prefix:
+    description: Prefix to use for graphite metrics.
+  mtail.statsd:
+    description: Statsd server to send metrics to.
+  mtail.statsd_prefix:
+    description: Prefix to use for statsd metrics.
+  mtail.push_interval_seconds:
+    description: Metrics push frequency to statsd or graphite.
+    default: 60

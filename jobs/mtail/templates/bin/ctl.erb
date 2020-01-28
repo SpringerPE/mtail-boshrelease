@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+#
+set -e # exit immediately if a simple command exits with a non-zero status
+set -u # report the usage of uninitialized variables
+
+# Load job properties
+source /var/vcap/jobs/mtail/data/properties.sh
+
+# Setup env vars and folders for the ctl script
+source /var/vcap/jobs/mtail/packages/mtail/bosh-helpers/setup.sh "mtail"
+
+# Load function lib (alway before setup, there are some global variables needed)
+source /var/vcap/jobs/mtail/packages/mtail/bosh-helpers/lib.sh
+
+case ${1:-help} in
+  start)
+    echon_log "Starting $COMPONENT: "
+    pid_guard $PIDFILE $COMPONENT
+    # Load python library path for dynamic libs
+    ldconf "$LD_LIBRARY_PATH"
+    (
+        {
+            setcap 'cap_net_bind_service=+ep' $(readlink -nf $(which mtail))
+            exec chpst -v -u vcap:vcap mtail --address=<%= p('mtail.address', '0.0.0.0') %> --port=<%= p('mtail.port', '3903') %> --logtostderr --progs=/var/vcap/jobs/mtail/config/progs \
+              <% p("mtail.progs", []).each do |cfg| %><% if cfg["log"] != nil && cfg["log"] != '' %> --logs=<%= cfg["log"] %><% end %><% end %> \
+              <% if_p("mtail.graphite") do |graphite| %>--graphite_host_port=<%= p('graphite') %> <% if_p("mtail.graphite_prefix") do |prefix| %> --graphite_prefix=<%= p('prefix') %><% end %> --metric_push_interval_seconds=<%= p('mtail.push_interval_seconds', '60') %><% end %> \
+              <% if_p("mtail.statsd") do |statsd| %>--statsd_hostport=<%= p('statsd') %> <% if_p("mtail.statsd_prefix") do |prefix| %> --statsd_prefix=<%= p('prefix') %> --metric_push_interval_seconds=<%= p('mtail.push_interval_seconds', '60') %><% end %>
+        } >>$LOG_DIR/$COMPONENT.stdout.log \
+        2>>$LOG_DIR/$COMPONENT.stderr.log
+    ) &
+    echo $! > $PIDFILE
+    echo "$(<${PIDFILE}). Done"
+    ;;
+  stop)
+    echo_log "Stopping $COMPONENT: $(<${PIDFILE}). "
+    kill_and_wait $PIDFILE
+    rm -f $PIDFILE
+    echo_log "Done"
+    ;;
+  *)
+    echo "Usage: $0 {start|stop}"
+    ;;
+esac
+exit 0
