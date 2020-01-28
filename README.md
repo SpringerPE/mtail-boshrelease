@@ -44,12 +44,10 @@ instance_groups:
       port: 3903
       graphite: "localhost:5555"
       progs:
-      - name: boshlogs
-        log: "/var/vcap/sys/log"
+      - name: mtaillogs
+        log: "/var/vcap/sys/log/mtail/*.log"
         config: |
           counter filename_lines by filename
-          # To make ex_test.go happy
-          strptime("2017-07-20T22:50:42Z", "2006-01-02T15:04:05Z07:00")
           /$/ {
             filename_lines[getfilename()]++
           }
@@ -104,6 +102,9 @@ addons:
   include:
     deployments:
     - cf
+    jobs:
+    - name: gorouter
+      release: cf
 ```
 
 # Author
