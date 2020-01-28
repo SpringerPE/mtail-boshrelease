@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -e -x
+
+BOSH_PACKAGES_DIR=${BOSH_PACKAGES_DIR:-/var/vcap/packages}
+MTAIL_VERSION=$(ls -vr mtail/mtail_*_linux_amd64 | sed 's/.*\/mtail_v\(.*\)_linux_amd64$/\1/' | head -1)
+
+# Build   mtail_v3.0.0-rc34_linux_amd64
+echo "Installing mtail binaries version $MTAIL_VERSION ..."
+mkdir -p ${BOSH_INSTALL_TARGET}/bin
+
+# copy binaries
+cp -a mtail/mtail_v${MTAIL_VERSION}_linux_amd64  ${BOSH_INSTALL_TARGET}/bin/mtail
+chmod a+x ${BOSH_INSTALL_TARGET}/bin/*
+
+# Install shell helpers
+echo "Adding shell helpers ..."
+cp -av bosh-helpers ${BOSH_INSTALL_TARGET}/
+
