@@ -5,12 +5,15 @@ PoC of mtail: https://github.com/google/mtail/
 
 # Creating and using a release:
 
-In order to test and create a non final release, run:
+In order to test and create a "non final" (dev) release, run:
 
 ```
-update-blobs.sh
-bosh create-release --force
-bosh upload-release
+# Update or sync blobs
+./update-blobs.sh
+# Create a dev release
+bosh  create-release --force --tarball=/tmp/release.tgz
+# Upload release to bosh director
+bosh -e <bosh-env> upload-release /tmp/release.tgz
 ```
 
 You can deploy an empty vm with this example manifest to provide
