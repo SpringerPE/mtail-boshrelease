@@ -93,17 +93,32 @@ addons:
           config: |
             counter gorouter_http_requests_total
             counter gorouter_http_requests by route, request_method, status_code
-            counter gorouter_http_requests_app by route
+            counter gorouter_http_requests_app by route, app_id
             /^/ +
             /(?P<route>[0-9A-Za-z\.:-]+) / +
             /- / +
-            /\[(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}(\+|-)\d{4})\] / +
+            /\[(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}(\+|-)\d{4})\] / +
             /"(?P<request_method>[A-Z]+) (?P<request_uri>\S+) (?P<http_version>HTTP\/[0-9\.]+)" / +
             /(?P<status_code>\d{3}) / +
+            /((?P<response_size>\d+)|-) / +
+            /(?P<response_time>\d+) / +
+            /"(?P<referer>\S+)" / +
+            /"(?P<user_agent>[[:print:]]+)" / +
+            /"(?P<remote_addr>[[:print:]]+)" / +
+            /"(?P<backend_addr>[[:print:]]+)" / +
+            /x_forwarded_for:"(?P<x_forwarded_for>[[:print:]]+)" / +
+            /x_forwarded_proto:"(?P<x_forwarded_proto>[[:print:]]+)" / +
+            /vcap_request_id:"(?P<vcap_request_id>[[:print:]]+)" / +
+            /response_time:(?P<response_time>[0-9\.]+) / +
+            /app_id:"(?P<app_id>[[:print:]]+)" / +
+            /app_index:"(?P<app_index>\d+)" / +
+            /tls_client_protocol:"(?P<tls_client_protocol>[[:print:]]+)" / +
+            /tls_client_cipher:"(?P<tls_client_cipher>[[:print:]]+)" / +
             /.*$/ {
+                # extra fields todo: zipkin headers
                 gorouter_http_requests_total++
                 gorouter_http_requests[$route][$request_method][$status_code]++
-                gorouter_http_requests_app[$route]++
+                gorouter_http_requests_app[$route][$app_id]++
             }
 
   include:
