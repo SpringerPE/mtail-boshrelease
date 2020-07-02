@@ -4,4 +4,5 @@ mtail/mtail_v3.0.0-rc34_linux_amd64:
   sha: 1f86d12c8f639a055b56c46cd8b682534fd47b92
 mtail/mtail_v3.0.0-rc36_linux_amd64:
   size: 16810540
+  object_id: 4343e9be-589d-43ee-4bd4-0697d016706c
   sha: sha256:a30af629885ee285a54cf9e9984853a313a55a699a8b23d06b583e6417337797
