@@ -1,5 +1,5 @@
 releases:
 - name: mtail
-  url: https://github.com/SpringerPE/mtail-boshrelease/releases/download/v1/mtail-1.tgz
-  version: 1
-  sha1: 88b561c77169ecd41f3885b95098f89d549f0759
+  url: https://github.com/SpringerPE/mtail-boshrelease/releases/download/v2/mtail-2.tgz
+  version: 2
+  sha1: 6771e6d42e0d1eb290b98de84060765ba3760511
