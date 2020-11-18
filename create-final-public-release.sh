@@ -60,7 +60,7 @@ then
     fi
     # Checking if the bucket is there. If not, create it first (this just a check to
     # be sure that s3cmd is properly setup and with the correct credentials
-    if ! $S3CMD ls | grep -q "s3://$RELEASE_BUCKET"
+    if ! $S3CMD ls | grep  "s3://$RELEASE_BUCKET" >/dev/null 2>&1
     then
         echo "Bucket 's3://$RELEASE_BUCKET' not found! Please create it first!"
         exit 1
