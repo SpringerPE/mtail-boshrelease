@@ -1,12 +1,3 @@
-mtail/mtail_v3.0.0-rc34_linux_amd64:
-  size: 15584876
-  object_id: b2c9532c-8483-4fac-77c9-413a84198244
-  sha: 1f86d12c8f639a055b56c46cd8b682534fd47b92
-mtail/mtail_v3.0.0-rc36_linux_amd64:
-  size: 16810540
-  object_id: 4343e9be-589d-43ee-4bd4-0697d016706c
-  sha: sha256:a30af629885ee285a54cf9e9984853a313a55a699a8b23d06b583e6417337797
-mtail/mtail_v3.0.0-rc38_linux_amd64:
-  size: 16100791
-  object_id: e0f63941-c8e7-46e2-5925-b4b5ad1c413c
-  sha: sha256:93090a6a924a2beb6d767972c55b6e6ec642addda1918a741b843a0a1473b981
+mtail/mtail_3.0.0-rc49_Linux_x86_64.tar.gz:
+  size: 8160398
+  sha: sha256:9183f75a7268dedacbd8795c08d21e63e14a73b40e2ef3cfe8d785eb08118427
