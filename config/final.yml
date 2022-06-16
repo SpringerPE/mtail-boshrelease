@@ -1,7 +1,6 @@
 ---
 name: mtail
 blobstore:
-  provider: s3
+  provider: local
   options:
-    bucket_name: mtail-boshrelease
-final_name: mtail-boshrelease
+    blobstore_path: final_blobs
