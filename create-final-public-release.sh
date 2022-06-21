@@ -8,9 +8,6 @@ set -e
 RELEASE="mtail"
 DESCRIPTION="Mtail Bosh Release"
 GITHUB_REPO="SpringerPE/mtail-boshrelease"
-# Do not define this variable if the repo uses git lfs
-# https://starkandwayne.com/blog/bosh-releases-with-git-lfs/
-RELEASE_BUCKET="mtail-boshrelease"
 
 ###
 
@@ -48,23 +45,6 @@ if ! [ -x "$(command -v $SHA1)" ]
 then
     echo "ERROR: $SHA1 command not found! Please install it and make it available in the PATH"
     exit 1
-fi
-
-if [ -n "$RELEASE_BUCKET" ]
-then
-    # You need s3cmd installed and with you credentials
-    if ! [ -x "$(command -v $S3CMD)" ]
-    then
-        echo "$S3CMD command not found!"
-        exit 1
-    fi
-    # Checking if the bucket is there. If not, create it first (this just a check to
-    # be sure that s3cmd is properly setup and with the correct credentials
-    if ! $S3CMD ls | grep  "s3://$RELEASE_BUCKET" >/dev/null 2>&1
-    then
-        echo "Bucket 's3://$RELEASE_BUCKET' not found! Please create it first!"
-        exit 1
-    fi
 fi
 
 case $# in
@@ -125,22 +105,16 @@ else
     $BOSH_CLI create-release --force --final --tarball="/tmp/$RELEASE-$$.tgz" --name "$RELEASE" --version "$version"
 fi
 
-# Create a release in Github
-sha1=$($SHA1 "/tmp/$RELEASE-$$.tgz" | cut -d' ' -f1)
-cat <<EOF > manifest/vars-release-version.yml
-releases:
-- name: $RELEASE
-  url: https://github.com/${GITHUB_REPO}/releases/download/v${version}/${RELEASE}-${version}.tgz
-  version: $version
-  sha1: $sha1
-EOF
 # Create a new tag and update the changes
 echo "* Commiting git changes ..."
-git add .final_builds releases/$RELEASE/index.yml "releases/$RELEASE/$RELEASE-$version.yml" config/blobs.yml manifest/vars-release-version.yml
+git add .final_builds releases/$RELEASE/index.yml "releases/$RELEASE/$RELEASE-$version.yml" config/blobs.yml blobstore
 git commit -m "$RELEASE v$version Boshrelease"
 git push
 git push --tags
 
+# Create a release in Github
+echo "* Creating a new release in Github ... "
+sha1=$($SHA1 "/tmp/$RELEASE-$$.tgz" | cut -d' ' -f1)
 description=$(cat <<EOF
 # $RELEASE version $version
 
@@ -154,29 +128,30 @@ $git_changes
 
     releases:
     - name: $RELEASE
-      url: https://github.com/${GITHUB_REPO}/releases/download/v${version}/${RELEASE}-${version}.tgz
+      url: https://github.com/${GITHUB_REPO}/releases/download/v${version}/${RELEASE}.tgz
       version: $version
       sha1: $sha1
+
+or to always point to latest release:
+
+    releases:
+    - name: $RELEASE
+      url: https://github.com/${GITHUB_REPO}/releases/latest/download/${RELEASE}.tgz
+      version: latest
+
+
 EOF
 )
-echo "* Creating a new release in Github ... "
 printf -v DATA '{"tag_name": "v%s","target_commitish": "master","name": "v%s","body": %s,"draft": false, "prerelease": false}' "$version" "$version" "$(echo "$description" | $JQ -R -s '@text')"
 releaseid=$($CURL -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" -XPOST --data "$DATA" "https://api.github.com/repos/$GITHUB_REPO/releases" | $JQ '.id')
 
 # Upload the release
 echo "* Uploading tarball to Github releases section ... "
 echo -n "  URL: "
-$CURL -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/octet-stream" --data-binary @"/tmp/$RELEASE-$$.tgz" "https://uploads.github.com/repos/$GITHUB_REPO/releases/$releaseid/assets?name=$RELEASE-$version.tgz" | $JQ -r '.browser_download_url'
+$CURL -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/octet-stream" --data-binary @"/tmp/$RELEASE-$$.tgz" "https://uploads.github.com/repos/$GITHUB_REPO/releases/$releaseid/assets?name=$RELEASE.tgz" | $JQ -r '.browser_download_url'
 
 # Delete the release
 rm -f "/tmp/$RELEASE-$$.tgz"
-
-if [ -n "$RELEASE_BUCKET" ]
-then
-    # Update ACLs on bucket
-    echo "* Assigning public ACL to new blobs in bucket ... "
-    $S3CMD setacl "s3://${RELEASE_BUCKET}" --acl-public --recursive
-fi
 
 echo
 echo "*** Description https://github.com/$GITHUB_REPO/releases/tag/v$version: "
