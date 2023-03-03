@@ -4,5 +4,5 @@ name: mtail
 dependencies: []
 
 files:
-- mtail/mtail_3.0.0-rc49_Linux_x86_64.tar.gz  # https://github.com/google/mtail/releases/download/v3.0.0-rc49/mtail_3.0.0-rc49_Linux_x86_64.tar.gz
+- mtail/mtail_3.0.0-rc51_Linux_x86_64.tar.gz  # https://github.com/google/mtail/releases/download/v3.0.0-rc51/mtail_3.0.0-rc51_Linux_x86_64.tar.gz
 - bosh-helpers/**/*
