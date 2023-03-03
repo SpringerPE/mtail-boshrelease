@@ -11,7 +11,7 @@ export JOB_FULL="$JOB_NAME/$JOB_INDEX"
 export JOB_AZ="<%= spec.az %>"
 export JOB_DNS_DOMAIN="<%= spec.dns_domain_name %>"
 
-export INSTANCE_BOOTSTRAP=<% if spec.bootstrap == true || spec.bootstrap =~ (/(true|t|yes|y|1)$/i) %>1<% else %>0<% end %>
+export INSTANCE_BOOTSTRAP=<% if spec.bootstrap == true %>1<% else %>0<% end %>
 export INSTANCE_NAME="<%= spec.name %>"
 # spec.networks.send(spec.networks.methods(false).first).ip
 # spec.networks.to_h.values.first.ip
