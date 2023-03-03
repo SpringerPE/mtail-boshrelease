@@ -12,7 +12,6 @@ GITHUB_REPO="SpringerPE/mtail-boshrelease"
 ###
 
 BOSH_CLI=${BOSH_CLI:-bosh}
-S3CMD=${S3CMD:-s3cmd}
 JQ=jq
 CURL="curl -s"
 SHA1="sha1sum -b"
@@ -77,7 +76,7 @@ esac
 
 
 # Get the last git commit made by this script
-lastcommit=$(git log --format="%h" --grep="$RELEASE v*" | head -1)
+lastcommit=$(git log --no-walk --tags --pretty="%h %s" --grep="mtail v*" | awk 'NR==1{ print $1 }')
 echo "* Changes since last version with commit $lastcommit: "
 git_changes=$(git log --pretty="%h %aI %s (%an)" $lastcommit..@ | sed 's/^/- /')
 if [ -z "$git_changes" ]
