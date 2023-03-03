@@ -1,0 +1,26 @@
+name: mtail
+version: "3.1"
+commit_hash: "0433010"
+uncommitted_changes: true
+jobs:
+- name: mtail
+  version: e8371f9cbaec4f28370694a6ad4beb28698ea879129b9688f0494a0f68a71144
+  fingerprint: e8371f9cbaec4f28370694a6ad4beb28698ea879129b9688f0494a0f68a71144
+  sha1: sha256:30c5610963eec1f99123d2053fa2f142b77e6cd657d0f03318809fb2a24ad184
+  packages:
+  - mtail
+packages:
+- name: bosh-helpers
+  version: 8b4406ece6fe24a35b50dcf28aca9eb33c7793bc72f9adb3bc9f03cd31e67446
+  fingerprint: 8b4406ece6fe24a35b50dcf28aca9eb33c7793bc72f9adb3bc9f03cd31e67446
+  sha1: sha256:1d8e3564440a87c39b0b9ee9844c4c5de18760d4af8456422ea695cf15aa7539
+  dependencies: []
+- name: mtail
+  version: 3d79ba6d265c459c52b88e6e255656b9ceee0cede79105ae40049e85f958e303
+  fingerprint: 3d79ba6d265c459c52b88e6e255656b9ceee0cede79105ae40049e85f958e303
+  sha1: sha256:e0276d365b179784ef0e711f935615e55280103ff16a9cb52161dc81dc3e9556
+  dependencies: []
+license:
+  version: dd05ef03bb173492b92b43bcb847309c3e70b62e9a0a2f6c116c5f296d87dc9b
+  fingerprint: dd05ef03bb173492b92b43bcb847309c3e70b62e9a0a2f6c116c5f296d87dc9b
+  sha1: sha256:9f6b42dc2887253e1fb5ec2ee1f0cc7b35eb9adeda781ade9c6045b812287a04
